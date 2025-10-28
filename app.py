@@ -34,7 +34,7 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
     st.session_state["messages"].append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
-    llm = ChatGroq(groq_api_key=api_key, model_name="llama-3.1-8b-instant", streaming=True)
+    llm = ChatGroq(groq_api_key=api_key, model_name="mistralai/Mistral-7B-Instruct-v0.3", streaming=True)
 
     # Create agent using new API
     agent = create_openai_functions_agent(llm=llm, tools=tools)
@@ -44,3 +44,4 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
     response = search_agent.run(prompt)
     st.session_state["messages"].append({"role": "assistant", "content": response})
     st.chat_message("assistant").write(response)
+
