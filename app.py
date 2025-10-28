@@ -2,8 +2,6 @@ import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_community.utilities import ArxivAPIWrapper, WikipediaAPIWrapper
 from langchain_community.tools import ArxivQueryRun, WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain_core.prompts import PromptTemplate
-from langchain_core.chains import LLMChain
 from langchain.callbacks import StreamlitCallbackHandler
 import os
 from dotenv import load_dotenv
@@ -30,23 +28,16 @@ if "messages" not in st.session_state:
         {"role": "assistant", "content": "Hi, I'm a chatbot who can search the web. How can I help you?"}
     ]
 
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg['content'])
+for msg in st.session_state["messages"]:
+    st.chat_message(msg["role"]).write(msg["content"])
 
 if prompt := st.chat_input(placeholder="What is machine learning?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.session_state["messages"].append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
     llm = ChatGroq(groq_api_key=api_key, model_name="Llama3-8b-8192", streaming=True)
 
-    template = "Answer the following question using your knowledge and available tools: {question}"
-    agent_prompt = PromptTemplate(template=template, input_variables=["question"])
-    llm_chain = LLMChain(llm=llm, prompt=agent_prompt)
-
-    with st.chat_message("assistant"):
-        st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-        response = llm_chain.run({"question": prompt})
-        st.session_state.messages.append({'role': 'assistant', "content": response})
-        st.write(response)
-
-
+    # Directly call the LLM for a response
+    response = llm(prompt)
+    st.session_state["messages"].append({"role": "assistant", "content": response})
+    st.chat_message("assistant").write(response)
