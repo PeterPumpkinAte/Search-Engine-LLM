@@ -2,7 +2,7 @@ import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_community.utilities import ArxivAPIWrapper, WikipediaAPIWrapper
 from langchain_community.tools import ArxivQueryRun, WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain_community.agents import AgentExecutor, ZeroShotAgent
+from langchain.agents import AgentExecutor, ZeroShotAgent
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.callbacks import StreamlitCallbackHandler
@@ -70,3 +70,4 @@ Thought: {agent_scratchpad}"""
         response = agent_executor.invoke({"input": prompt}, callbacks=[st_cb])
         st.session_state.messages.append({'role': 'assistant', "content": response["output"]})
         st.write(response["output"])
+
