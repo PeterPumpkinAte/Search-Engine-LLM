@@ -23,6 +23,10 @@ Try more LangChain 🤝 Streamlit Agent examples at [github.com/langchain-ai/str
 st.sidebar.title("Settings")
 api_key = st.sidebar.text_input("Enter your Groq API Key:", type="password")
 
+# Use the sidebar input, or fallback to .env if empty
+if not api_key:
+    api_key = os.getenv("GROQ_API_KEY")
+
 if "messages" not in st.session_state:
     st.session_state["messages"] = [
         {"role": "assistant", "content": "Hi, I'm a chatbot who can search the web. How can I help you?"}
@@ -37,7 +41,7 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
 
     llm = ChatGroq(groq_api_key=api_key, model_name="Llama3-8b-8192", streaming=True)
 
-    # Directly call the LLM for a response
-    response = llm(prompt)
+    # Correct way to invoke the LLM
+    response = llm.invoke(prompt)
     st.session_state["messages"].append({"role": "assistant", "content": response})
     st.chat_message("assistant").write(response)
