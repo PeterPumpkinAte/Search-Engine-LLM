@@ -2,12 +2,12 @@ import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_community.utilities import ArxivAPIWrapper, WikipediaAPIWrapper
 from langchain_community.tools import ArxivQueryRun, WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain.callbacks import StreamlitCallbackHandler
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# Tool setup (not used in response yet, but ready for future use)
 arxiv_wrapper = ArxivAPIWrapper(top_k_results=1, doc_content_chars_max=200)
 arxiv = ArxivQueryRun(api_wrapper=arxiv_wrapper)
 api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=200)
@@ -16,7 +16,7 @@ search = DuckDuckGoSearchRun(name="Search")
 
 st.title("🔎 LangChain - Chat with search")
 """
-In this example, we're using `StreamlitCallbackHandler` to display the thoughts and actions of an agent in an interactive Streamlit app.
+In this example, we're using Streamlit to display the thoughts and actions of a chatbot in an interactive app.
 Try more LangChain 🤝 Streamlit Agent examples at [github.com/langchain-ai/streamlit-agent](https://github.com/langchain-ai/streamlit-agent).
 """
 
