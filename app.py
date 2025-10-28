@@ -2,23 +2,18 @@ import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_community.utilities import ArxivAPIWrapper, WikipediaAPIWrapper
 from langchain_community.tools import ArxivQueryRun, WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain.agents import RunnableAgent, RunnableMultiToolAgent
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.callbacks import StreamlitCallbackHandler
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# Arxiv and Wikipedia Tools
 arxiv_wrapper = ArxivAPIWrapper(top_k_results=1, doc_content_chars_max=200)
 arxiv = ArxivQueryRun(api_wrapper=arxiv_wrapper)
-
 api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=200)
 wiki = WikipediaQueryRun(api_wrapper=api_wrapper)
-
 search = DuckDuckGoSearchRun(name="Search")
 
 st.title("🔎 LangChain - Chat with search")
@@ -27,7 +22,6 @@ In this example, we're using `StreamlitCallbackHandler` to display the thoughts 
 Try more LangChain 🤝 Streamlit Agent examples at [github.com/langchain-ai/streamlit-agent](https://github.com/langchain-ai/streamlit-agent).
 """
 
-# Sidebar for settings
 st.sidebar.title("Settings")
 api_key = st.sidebar.text_input("Enter your Groq API Key:", type="password")
 
@@ -44,31 +38,13 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
     st.chat_message("user").write(prompt)
 
     llm = ChatGroq(groq_api_key=api_key, model_name="Llama3-8b-8192", streaming=True)
-    tools = [search, arxiv, wiki]
 
-    # Agent prompt template
-    template = """Answer the following questions as best you can. You have access to the following tools:
-
-{tools}
-
-Use the following format:
-
-Question: {input}
-Thought: {agent_scratchpad}"""
-
-    agent_prompt = PromptTemplate(
-        template=template,
-        input_variables=["input", "tools", "agent_scratchpad"]
-    )
-
+    template = "Answer the following question using your knowledge and available tools: {question}"
+    agent_prompt = PromptTemplate(template=template, input_variables=["question"])
     llm_chain = LLMChain(llm=llm, prompt=agent_prompt)
-    agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools)
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-        response = agent_executor.invoke({"input": prompt}, callbacks=[st_cb])
-        st.session_state.messages.append({'role': 'assistant', "content": response["output"]})
-        st.write(response["output"])
-
-
+        response = llm_chain.run({"question": prompt})
+        st.session_state.messages.append({'role': 'assistant', "content": response})
+        st.write(response)
