@@ -39,9 +39,10 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
     st.session_state["messages"].append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
-    llm = ChatGroq(groq_api_key=api_key, model_name="Llama3-8b-8192", streaming=True)
+    llm = ChatGroq(groq_api_key=api_key, model_name="mistralai/Mistral-7B-Instruct-v0.3", streaming=True)
 
     # Correct way to invoke the LLM
     response = llm.invoke(prompt)
     st.session_state["messages"].append({"role": "assistant", "content": response})
     st.chat_message("assistant").write(response)
+
