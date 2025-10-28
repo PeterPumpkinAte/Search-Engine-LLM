@@ -2,8 +2,6 @@ import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_community.utilities import ArxivAPIWrapper, WikipediaAPIWrapper
 from langchain_community.tools import ArxivQueryRun, WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain_experimental.agents import create_openai_functions_agent  # Try this import
-from langchain_community.agents import AgentExecutor
 import os
 from dotenv import load_dotenv
 
@@ -34,14 +32,9 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
     st.session_state["messages"].append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
-    llm = ChatGroq(groq_api_key=api_key, model_name="mistralai/Mistral-7B-Instruct-v0.3", streaming=True)
+    llm = ChatGroq(groq_api_key=api_key, model_name="mixtral-8x7b-32768", streaming=True)
 
-    # Create agent using new API
-    agent = create_openai_functions_agent(llm=llm, tools=tools)
-    search_agent = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-    # Run agent
-    response = search_agent.run(prompt)
+    # Directly call the LLM for a response
+    response = llm.invoke(prompt)
     st.session_state["messages"].append({"role": "assistant", "content": response})
     st.chat_message("assistant").write(response)
-
