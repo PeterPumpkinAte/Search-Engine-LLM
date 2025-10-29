@@ -14,6 +14,8 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+      - name: Pull latest from Hugging Face remote
+        run: git pull https://huggingface.co/spaces/PeterPumpkin/Search_Engine_llm main --rebase
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
