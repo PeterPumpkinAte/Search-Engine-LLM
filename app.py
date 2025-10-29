@@ -1,3 +1,8 @@
+import langchain
+import langchain_community
+print("LangChain version:", langchain.__version__)
+print("LangChain Community version:", langchain_community.__version__)
+
 import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_community.utilities import ArxivAPIWrapper,WikipediaAPIWrapper
