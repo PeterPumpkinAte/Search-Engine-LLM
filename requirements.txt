@@ -3,7 +3,7 @@ langchain-ollama
 langchain==0.1.14
 python-dotenv
 langchain_community
-langchain-community
+langchain-community==0.0.26
 langchain_core
 streamlit
 langchain-groq
