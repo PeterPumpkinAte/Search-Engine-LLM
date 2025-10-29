@@ -18,9 +18,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Pull latest from Hugging Face remote (auto-resolve conflicts by favoring local)
+      - name: Pull latest from Hugging Face remote (favor local README.md)
         run: |
-          git pull --rebase --strategy-option=theirs https://huggingface.co/spaces/PeterPumpkin/Search_Engine_llm main || true
+          git fetch https://huggingface.co/spaces/PeterPumpkin/Search_Engine_llm main
+          git checkout FETCH_HEAD -- README.md || true
+          git add README.md
+          git commit -m "Keep local README.md" || true
 
       - name: Push to hub
         env:
