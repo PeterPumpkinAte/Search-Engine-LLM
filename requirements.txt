@@ -1,6 +1,6 @@
 langchain-openai
 langchain-ollama
-langchain
+langchain==0.1.14
 python-dotenv
 langchain_community
 langchain-community
